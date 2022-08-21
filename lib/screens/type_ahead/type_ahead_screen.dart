@@ -19,6 +19,7 @@ class TypeAheadPageScreen extends StatelessWidget {
         child: Column(
           children: const [
             TypeAheadInput(),
+            ProgressBar(),
             SuggestionList(),
           ],
         ),
@@ -208,6 +209,29 @@ class EventWidget extends StatelessWidget {
           Text(event.date.toStr, maxLines: 1),
         ],
       ),
+    );
+  }
+}
+
+class ProgressBar extends StatefulWidget {
+  const ProgressBar({Key? key}) : super(key: key);
+
+  @override
+  State<ProgressBar> createState() => _ProgressBarState();
+}
+
+class _ProgressBarState extends State<ProgressBar> {
+  @override
+  Widget build(BuildContext context) {
+    const double height = 3;
+    return BlocSelector<TypeAheadBloc, TypeAheadState, bool>(
+      selector: (state) => state.isLoading,
+      builder: (context, isLoading) {
+        if (isLoading) {
+          return const LinearProgressIndicator(minHeight: height);
+        }
+        return const SizedBox(height: height);
+      },
     );
   }
 }

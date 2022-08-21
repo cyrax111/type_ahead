@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:type_ahead/widgets/favorite.dart';
 
 class EventImage extends StatelessWidget {
@@ -6,10 +7,12 @@ class EventImage extends StatelessWidget {
     Key? key,
     required this.image,
     required this.isFavorite,
+    required this.id,
   }) : super(key: key);
 
   final String image;
   final bool isFavorite;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +21,15 @@ class EventImage extends StatelessWidget {
     }
     return Stack(
       children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: Image(
-              image: NetworkImage(image),
-              fit: BoxFit.fill,
-            )),
+        Hero(
+          tag: 'image$id',
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Image(
+                image: NetworkImage(image),
+                fit: BoxFit.fill,
+              )),
+        ),
         Positioned(
           left: 0,
           top: 0,

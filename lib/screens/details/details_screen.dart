@@ -57,7 +57,7 @@ class DetailWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DetailEventImage(image: eventModel.image),
+          DetailEventImage(image: eventModel.image, id: eventModel.id),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(eventModel.date.toStr,
@@ -94,20 +94,25 @@ class DetailEventImage extends StatelessWidget {
   const DetailEventImage({
     Key? key,
     required this.image,
+    required this.id,
   }) : super(key: key);
 
   final String image;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
     if (image.isEmpty) {
       return const FlutterLogo();
     }
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Image(
-          image: NetworkImage(image),
-          fit: BoxFit.fill,
-        ));
+    return Hero(
+      tag: 'image$id',
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: Image(
+            image: NetworkImage(image),
+            fit: BoxFit.fill,
+          )),
+    );
   }
 }

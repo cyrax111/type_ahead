@@ -50,6 +50,7 @@ class AppRouterDelegate extends RouterDelegate<AppNavPath>
         ];
         return Navigator(
           key: navigatorKey,
+          observers: [HeroController()],
           pages: pages,
           onPopPage: (route, result) {
             if (!route.didPop(result)) {

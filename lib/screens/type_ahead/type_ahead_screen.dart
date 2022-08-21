@@ -200,7 +200,8 @@ class EventWidget extends StatelessWidget {
     return ListTile(
       onTap: () => bloc.add(EventTappedEvent(event)),
       minLeadingWidth: 80,
-      leading: EventImage(image: event.image, isFavorite: isFavorite),
+      leading:
+          EventImage(image: event.image, isFavorite: isFavorite, id: event.id),
       title: Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

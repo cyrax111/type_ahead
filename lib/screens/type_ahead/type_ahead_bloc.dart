@@ -1,7 +1,8 @@
 import 'dart:collection';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/transformers.dart';
 import 'package:type_ahead/navigation/navigation.dart';
 import 'package:type_ahead/screens/app/nav/app_nav_cubit.dart';
 import 'package:type_ahead/screens/type_ahead/type_ahead_model.dart';
@@ -26,7 +27,9 @@ class TypeAheadBloc extends Bloc<TypeAheadEvent, TypeAheadState> {
     on<TypeAheadInputChangedEvent>((event, emit) async {
       final query = event.text;
       if (query.isEmpty) {
-        emit(state.copyWith(events: [], page: 1));
+        emit(state.copyWith(
+            events: [], page: 1, typeAheadInput: const TypeAheadInput.pure()));
+        return;
       }
 
       emit(state.copyWith(isLoading: true));
@@ -35,11 +38,15 @@ class TypeAheadBloc extends Bloc<TypeAheadEvent, TypeAheadState> {
 
       final allEventsLoaded = fetchedEvents.length < eventsPerPage;
       emit(state.copyWith(
-        events: fetchedEvents,
-        page: state.page,
-        allEventsLoaded: allEventsLoaded,
-        isLoading: false,
-      ));
+          events: fetchedEvents,
+          page: state.page,
+          allEventsLoaded: allEventsLoaded,
+          isLoading: false,
+          typeAheadInput: TypeAheadInput.dirty(value: query)));
+    }, transformer: (events, mapper) {
+      return events
+          .debounceTime(const Duration(milliseconds: 300))
+          .asyncExpand(mapper);
     });
 
     on<BottomListReachedEvent>((event, emit) async {
@@ -81,6 +88,11 @@ class TypeAheadBloc extends Bloc<TypeAheadEvent, TypeAheadState> {
       emit(state.copyWith(favorites: updatedFavorites));
 
       await _typeAheadRepository.storeFavorites(updatedFavorites);
+    });
+
+    on<CancelButtonPushedEvent>((event, emit) async {
+      emit(state
+          .copyWith(events: [], typeAheadInput: const TypeAheadInput.pure()));
     });
   }
   final int eventsPerPage;

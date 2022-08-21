@@ -3,6 +3,7 @@
         "title":"type_ahead",
         "input":{
             "label":"Search",
+            "cancel":"Cancel",
             "error":{
                 "too_long":"Amount of symbols should be less then 100 symbols"
             }
@@ -11,6 +12,9 @@
             "no_events":"No events"
         }
        
+    },
+    "details":{
+        "empty_event":"Event is empty"
     }
    
  }

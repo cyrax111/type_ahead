@@ -9,7 +9,6 @@ void main() {
     'seatgeek real request -',
     () {
       test('description', () async {
-        const perPage = 20;
         const username = 'Mjg1NjA4MTZ8MTY2MDk4NDc5MS40MzM1ODY';
         const password =
             '0a3836d4bb5b1c85719f4bd6f2c1f91cb5649960591b399ba5a4e18eb687e473';

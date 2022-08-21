@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:type_ahead/core/ext.dart';
 
+import 'package:type_ahead/core/ext.dart';
 import 'package:type_ahead/generated/locale_keys.g.dart';
+import 'package:type_ahead/widgets/event_image.dart';
 
 import 'type_ahead_bloc.dart';
 import 'type_ahead_model.dart';
@@ -26,29 +27,64 @@ class TypeAheadPageScreen extends StatelessWidget {
   }
 }
 
-class TypeAheadInput extends StatelessWidget {
+class TypeAheadInput extends StatefulWidget {
   const TypeAheadInput({Key? key}) : super(key: key);
+
+  @override
+  State<TypeAheadInput> createState() => _TypeAheadInputState();
+}
+
+class _TypeAheadInputState extends State<TypeAheadInput> {
+  late TextEditingController _textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<TypeAheadBloc>(context);
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: 'state.fromTitle.tr()',
-                isDense: true,
-                border: OutlineInputBorder(),
+    return BlocListener<TypeAheadBloc, TypeAheadState>(
+      bloc: bloc,
+      listenWhen: (previous, current) =>
+          previous.typeAheadInput.value != current.typeAheadInput.value,
+      listener: (context, state) {
+        if (state.typeAheadInput.value.isEmpty) {
+          _textEditingController.clear();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _textEditingController,
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.type_ahead_input_label.tr(),
+                  isDense: true,
+                  border: const OutlineInputBorder(),
+                ),
+                onChanged: (value) =>
+                    bloc.add(TypeAheadInputChangedEvent(value)),
               ),
-              onChanged: (value) => bloc.add(TypeAheadInputChangedEvent(value)),
             ),
-          ),
-          const SizedBox(width: 10),
-          TextButton(onPressed: () {}, child: Text('Cancel')),
-        ],
+            const SizedBox(width: 10),
+            TextButton(
+                onPressed: () {
+                  bloc.add(const CancelButtonPushedEvent());
+                },
+                child: Text(LocaleKeys.type_ahead_input_cancel.tr())),
+          ],
+        ),
       ),
     );
   }
@@ -108,7 +144,6 @@ class _SuggestionListState extends State<SuggestionList> {
                     Text(LocaleKeys.type_ahead_suggestion_list_no_events.tr()));
           }
           final events = state.events;
-          final lastIndex = bloc.eventsPerPage;
           return ListView.builder(
             itemCount:
                 state.allEventsLoaded ? events.length : events.length + 1,
@@ -164,7 +199,7 @@ class EventWidget extends StatelessWidget {
     return ListTile(
       onTap: () => bloc.add(EventTappedEvent(event)),
       minLeadingWidth: 80,
-      leading: EventImage(image: event.image),
+      leading: EventImage(image: event.image, isFavorite: isFavorite),
       title: Text(event.title, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,29 +208,6 @@ class EventWidget extends StatelessWidget {
           Text(event.date.toStr, maxLines: 1),
         ],
       ),
-      trailing: Text(isFavorite.toString()),
     );
-  }
-}
-
-class EventImage extends StatelessWidget {
-  const EventImage({
-    Key? key,
-    required this.image,
-  }) : super(key: key);
-
-  final String image;
-
-  @override
-  Widget build(BuildContext context) {
-    if (image.isEmpty) {
-      return const FlutterLogo();
-    }
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Image(
-          image: NetworkImage(image),
-          fit: BoxFit.fill,
-        ));
   }
 }

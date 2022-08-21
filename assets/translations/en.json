@@ -1,0 +1,16 @@
+{
+    "type_ahead":{
+        "title":"type_ahead",
+        "input":{
+            "label":"Search",
+            "error":{
+                "too_long":"Amount of symbols should be less then 100 symbols"
+            }
+        },
+        "suggestion_list":{
+            "no_events":"No events"
+        }
+       
+    }
+   
+ }

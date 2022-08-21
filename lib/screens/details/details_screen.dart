@@ -6,7 +6,6 @@ import 'package:type_ahead/core/ext.dart';
 import 'package:type_ahead/generated/locale_keys.g.dart';
 import 'package:type_ahead/screens/type_ahead/type_ahead_bloc.dart';
 import 'package:type_ahead/screens/type_ahead/type_ahead_model.dart';
-import 'package:type_ahead/widgets/event_image.dart';
 import 'package:type_ahead/widgets/favorite.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -35,8 +34,7 @@ class DetailsScreen extends StatelessWidget {
             ],
           ),
           body: SafeArea(
-            child: DetailWidget(
-                eventModel: event, isFavorite: state.isFavorite(event.id)),
+            child: DetailWidget(eventModel: event),
           ),
         );
       },
@@ -48,11 +46,9 @@ class DetailWidget extends StatelessWidget {
   const DetailWidget({
     Key? key,
     required this.eventModel,
-    required this.isFavorite,
   }) : super(key: key);
 
   final EventModel eventModel;
-  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +57,7 @@ class DetailWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          EventImage(image: eventModel.image, isFavorite: isFavorite),
+          DetailEventImage(image: eventModel.image),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(eventModel.date.toStr,
@@ -91,5 +87,27 @@ class FavoriteAction extends StatelessWidget {
       icon: FavoriteWidget(isFavorite: isFavorite),
       onPressed: callback,
     );
+  }
+}
+
+class DetailEventImage extends StatelessWidget {
+  const DetailEventImage({
+    Key? key,
+    required this.image,
+  }) : super(key: key);
+
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    if (image.isEmpty) {
+      return const FlutterLogo();
+    }
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Image(
+          image: NetworkImage(image),
+          fit: BoxFit.fill,
+        ));
   }
 }

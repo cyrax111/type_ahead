@@ -24,6 +24,8 @@ class TypeAheadBloc extends Bloc<TypeAheadEvent, TypeAheadState> {
       emit(state.copyWith(favorites: favorites));
     });
 
+    // TODO(any): handle exceptions
+
     on<TypeAheadInputChangedEvent>((event, emit) async {
       final query = event.text;
       if (query.isEmpty) {
@@ -95,6 +97,7 @@ class TypeAheadBloc extends Bloc<TypeAheadEvent, TypeAheadState> {
           .copyWith(events: [], typeAheadInput: const TypeAheadInput.pure()));
     });
   }
+
   final int eventsPerPage;
   final BaseNav _navigation;
   final TypeAheadRepository _typeAheadRepository;

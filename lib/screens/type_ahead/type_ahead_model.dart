@@ -3,7 +3,6 @@ import 'package:formz/formz.dart';
 
 import 'package:type_ahead/generated/locale_keys.g.dart';
 
-// Define input validation errors
 enum RangeInputError {
   empty(LocaleKeys.type_ahead_input_error_too_long);
 

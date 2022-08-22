@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:type_ahead/screens/type_ahead/type_ahead_bloc.dart';
 import 'package:type_ahead/screens/type_ahead/type_ahead_model.dart';
 
+import '../../mock/events_mock.dart';
 import '../../mock/navigation_mock.dart';
 import 'mock/type_ahead_repository_mock.dart';
 
@@ -32,10 +33,7 @@ void main() {
         TypeAheadState(favorites: const {'2'}, isLoading: true),
         TypeAheadState(
           favorites: const {'2'},
-          events: [
-            TypeAheadRepositoryMock.event1,
-            TypeAheadRepositoryMock.event2
-          ],
+          events: [mockEvent1, mockEvent2],
           typeAheadInput: const TypeAheadInput.dirty(value: 'event'),
           allEventsLoaded: true,
         ),
@@ -52,29 +50,23 @@ void main() {
           ..add(const InitializedEvent())
           ..add(const TypeAheadInputChangedEvent('event'));
         await Future.delayed(const Duration(seconds: 1));
-        bloc.add(EventTappedEvent(TypeAheadRepositoryMock.event2));
+        bloc.add(EventTappedEvent(mockEvent2));
       },
       expect: () => [
         TypeAheadState(favorites: const {'2'}),
         TypeAheadState(favorites: const {'2'}, isLoading: true),
         TypeAheadState(
           favorites: const {'2'},
-          events: [
-            TypeAheadRepositoryMock.event1,
-            TypeAheadRepositoryMock.event2
-          ],
+          events: [mockEvent1, mockEvent2],
           typeAheadInput: const TypeAheadInput.dirty(value: 'event'),
           allEventsLoaded: true,
         ),
         TypeAheadState(
           favorites: const {'2'},
-          events: [
-            TypeAheadRepositoryMock.event1,
-            TypeAheadRepositoryMock.event2
-          ],
+          events: [mockEvent1, mockEvent2],
           typeAheadInput: const TypeAheadInput.dirty(value: 'event'),
           allEventsLoaded: true,
-          selectedEvent: TypeAheadRepositoryMock.event2,
+          selectedEvent: mockEvent2,
         ),
       ],
     );

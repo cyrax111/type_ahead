@@ -1,0 +1,20 @@
+{
+    "type_ahead":{
+        "title":"type_ahead",
+        "input":{
+            "label":"يبحث",
+            "cancel":"يلغي",
+            "error":{
+                "too_long":"يجب أن يكون عدد الرموز أقل من 100 رمز"
+            }
+        },
+        "suggestion_list":{
+            "no_events":"لا أحداث"
+        }
+       
+    },
+    "details":{
+        "empty_event":"الحدث فارغ"
+    }
+   
+ }
